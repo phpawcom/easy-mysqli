@@ -81,6 +81,3 @@ $db->select('*')->from('user')->pages(10, 1)->order('userid ASC')->execute(); ##
 
 Feel free to use/modify class!
 
-
-
-# easy-mysqil
