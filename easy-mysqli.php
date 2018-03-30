@@ -228,18 +228,21 @@ class database {
 			$this->query_buffer['criteria_values'] = array();
 		}
 		switch($operation){
-			case 'like': $term = 'like \'%'.$this->escape_string($value).'%\' '; break;
-			case 'likeAnd': $term = 'like \'%'.str_replace('&amp;', '&', $this->escape_string($value)).'%\' '; break;
-			case 'fnEq': $term = '= '.stripslashes($this->escape_string($value)).' '; break;
-			case 'fnGt': $term = '> '.stripslashes($this->escape_string($value)).' '; break;
-			case 'fnGtEq': $term = '>= '.stripslashes($this->escape_string($value)).' '; break;
-			case 'fnLt': $term = '< '.stripslashes($this->escape_string($value)).' '; break;
-			case 'fnLtEq': $term = '<= '.stripslashes($this->escape_string($value)).' '; break;
-			case 'inArray': if(is_array($value) && count($value) > 0){ $term = 'in ('.$this->escape_string(implode(',', $value)).') '; }; break;
-			case 'inArrayQ': if(is_array($value) && count($value) > 0){ $term = 'in (\''.stripslashes($this->escape_string(implode('\',\'', $value))).'\') '; }; break;
-			case '!inArray': if(is_array($value) && count($value) > 0){ $term = 'not in ('.$this->escape_string(implode(',', $value)).') '; }; break;
-			case '!inArrayQ': if(is_array($value) && count($value) > 0){ $term = 'not in (\''.stripslashes($this->escape_string(implode('\',\'', $value))).'\') '; }; break;
-			default: $term = $operation.' \''.$this->escape_string($value).'\' '; break;
+			case 'like': $term = 'like \'%'.parent::safeinput($value).'%\' '; break;
+			case 'likeAnd': $term = 'like \'%'.str_replace('&amp;', '&', parent::safeinput($value)).'%\' '; break;
+			case 'likeQ': $term = 'like \'%'.str_replace('&quot;', '"', parent::safeinput($value)).'%\' '; break;
+			case 'fnEq': $term = '= '.$value.' '; break;
+			case 'fnGt': $term = '> '.parent::safeinput($value).' '; break;
+			case 'fnGtEq': $term = '>= '.parent::safeinput($value).' '; break;
+			case 'fnLt': $term = '< '.parent::safeinput($value).' '; break;
+			case 'fnLtEq': $term = '<= '.parent::safeinput($value).' '; break;
+			case 'inArray': if(is_array($value) && count($value) > 0){ $term = 'in ('.parent::safeinput(implode(',', $value)).') '; }; break;
+			case 'inArrayF': $term = 'in ('.$value.') '; break;
+			case 'inArrayQ': if(is_array($value) && count($value) > 0){ $term = 'in (\''.stripslashes(parent::safeinput(implode('\',\'', $value))).'\') '; }; break;
+			case '!inArray': if(is_array($value) && count($value) > 0){ $term = 'not in ('.parent::safeinput(implode(',', $value)).') '; }; break;
+			case '!inArrayF': $term = 'not in ('.$value.') '; break;
+			case '!inArrayQ': if(is_array($value) && count($value) > 0){ $term = 'not in (\''.stripslashes(parent::safeinput(implode('\',\'', $value))).'\') '; }; break;
+			default: $term = $operation.' \''.parent::safeinput($value).'\' '; break;
 		}
 		//$term = $operation == 'like'? 'like \'%'.$this->escape_string($value).'%\' ' : $operation.' \''.$this->escape_string($value).'\' ';
 		array_push($this->query_buffer['criteria_values'], $term);
